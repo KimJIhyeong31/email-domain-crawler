@@ -139,7 +139,7 @@ def crawl(url, target_domain):
                 buckets[3].append(full_url)
             elif any(k in href_lower for k in ['notice', 'news', 'announcement']) or '공지' in text_a:
                 buckets[4].append(full_url)
-            elif any(k in href_lower for k in ['recruit', 'career', 'job']) or '차용' in text_a:
+            elif any(k in href_lower for k in ['recruit', 'career', 'job']) or '채용' in text_a:
                 buckets[5].append(full_url)
             else:
                 buckets[7].append(full_url)
@@ -171,7 +171,7 @@ def selenium_highlight(target_url, target_domain):
     options.add_argument("--start-maximized")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(target_url)
-    time.sleep(2)
+    time.sleep(3)
 
     # 페이지 내 도메인 텍스트를 하이라이팅하는 JavaScript
     highlight_script = f"""
@@ -184,7 +184,12 @@ def selenium_highlight(target_url, target_domain):
         const index = text.indexOf("{target_domain}");
         if (index !== -1) {{
             const span = document.createElement('span');
-            span.style.backgroundColor = 'yellow';
+            span.style.color = 'black';  
+            span.style.backgroundColor = '#FFD700';
+            span.style.padding = '2px 4px';
+            span.style.borderRadius = '4px';
+            span.style.fontWeight = 'bold';
+            span.style.boxShadow = '0 0 5px rgba(0,0,0,0.3)'; 
 
             const before = document.createTextNode(text.slice(0, index));
             const highlight = document.createTextNode(text.slice(index, index + "{target_domain}".length));
@@ -207,7 +212,7 @@ def selenium_highlight(target_url, target_domain):
     """
     found = driver.execute_script(highlight_script)
     if found:
-        time.sleep(2)
+        time.sleep(3)
         save_name = f"{target_domain.replace('@', 'at_').replace('.', '_')}.png"
         driver.save_screenshot(save_name)
     driver.quit()
